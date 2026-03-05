@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WANNACRY? LOL</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #c0000a;
+      --red-bright: #ff1a1a;
+      --red-dim: #6b0005;
+      --black: #0a0000;
+      --surface: #0f0303;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--black);
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    canvas#bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.18) 2px,
+        rgba(0,0,0,0.18) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .center {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .main-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 16vw, 14rem);
+      letter-spacing: 0.04em;
+      line-height: 0.9;
+      text-align: center;
+      position: relative;
+      user-select: none;
+
+      color: #fff0f0;
+      text-shadow:
+        0 0 10px var(--red-bright),
+        0 0 30px var(--red),
+        0 0 80px var(--red-dim),
+        0 0 160px #3d0002,
+        2px 2px 0px #000,
+        -2px -2px 0px #000;
+
+      animation: flicker 6s infinite;
+    }
+
+    .main-text .line1 { color: #ffe0e0; display: block; }
+    .main-text .line2 {
+      display: block;
+      font-size: clamp(3rem, 10vw, 9rem);
+      color: var(--red-bright);
+      text-shadow:
+        0 0 8px #fff,
+        0 0 20px var(--red-bright),
+        0 0 60px var(--red),
+        0 0 120px var(--red-dim);
+      letter-spacing: 0.2em;
+    }
+
+    .sub {
+      margin-top: 1.5rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.6rem, 1.5vw, 1rem);
+      color: var(--red-dim);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      animation: blink 2.5s step-start infinite;
+    }
+
+    .bracket {
+      position: fixed;
+      width: 60px; height: 60px;
+      border-color: var(--red-dim);
+      border-style: solid;
+      opacity: 0.5;
+    }
+    .bracket.tl { top: 24px; left: 24px; border-width: 2px 0 0 2px; }
+    .bracket.tr { top: 24px; right: 24px; border-width: 2px 2px 0 0; }
+    .bracket.bl { bottom: 24px; left: 24px; border-width: 0 0 2px 2px; }
+    .bracket.br { bottom: 24px; right: 24px; border-width: 0 2px 2px 0; }
+
+    .status {
+      position: fixed;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      color: var(--red-dim);
+      letter-spacing: 0.25em;
+      z-index: 6;
+      opacity: 0.5;
+    }
+
+    @keyframes flicker {
+      0%, 95%, 100% { opacity: 1; }
+      96% { opacity: 0.85; }
+      97% { opacity: 1; }
+      98% { opacity: 0.7; }
+      99% { opacity: 1; }
+    }
+
+    .para {
+      margin-top: 2rem;
+      max-width: 520px;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.7rem, 1.4vw, 0.95rem);
+      color: #ffffff;
+      font-weight: 700;
+      line-height: 1.7;
+      letter-spacing: 0.05em;
+      opacity: 0.9;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg"></canvas>
+
+  <div class="bracket tl"></div>
+  <div class="bracket tr"></div>
+  <div class="bracket bl"></div>
+  <div class="bracket br"></div>
+
+  <div class="center">
+    <div class="main-text">
+      <span class="line1">WANNACRY?</span>
+      <span class="line2">LOL</span>
+    </div>
+    <p class="para">This site is a mock. The domain registered is the same 40 character domain as the 2017 WannaCry
+    ransomware attack, the only difference is that this site is purely aesthetic and the TLD is .lol not .com.</p>
+  </div>
+
+  <div class="status">ENCRYPTED &nbsp;|&nbsp; 0x00FF &nbsp;|&nbsp; SYS::NULL</div>
+
+  <script>
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+
+    let W, H;
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const NUM = 220;
+    const particles = [];
+
+    function rand(a, b) { return a + Math.random() * (b - a); }
+
+    const COLORS = [
+      'rgba(192,0,10,',
+      'rgba(255,26,26,',
+      'rgba(100,0,5,',
+      'rgba(220,10,20,',
+      'rgba(80,0,3,',
+    ];
+
+    class Particle {
+      constructor() { this.reset(true); }
+
+      reset(initial = false) {
+        this.x = rand(0, W);
+        this.y = initial ? rand(0, H) : rand(-20, -2);
+        this.size = rand(1, 3.5);
+        this.speedY = rand(0.3, 1.4);
+        this.speedX = rand(-0.3, 0.3);
+        this.opacity = rand(0.3, 1);
+        this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        this.twinkle = rand(0.005, 0.02);
+        this.twinkleDir = 1;
+
+        this.streak = Math.random() < 0.08;
+        this.streakLen = rand(20, 80);
+        this.streakLife = rand(0.2, 0.7);
+      }
+
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.opacity += this.twinkle * this.twinkleDir;
+        if (this.opacity > 1 || this.opacity < 0.1) this.twinkleDir *= -1;
+        if (this.y > H + 10) this.reset();
+      }
+
+      draw() {
+        ctx.save();
+        if (this.streak) {
+
+          ctx.globalAlpha = this.opacity * this.streakLife;
+          ctx.fillStyle = this.color + this.opacity + ')';
+          ctx.fillRect(this.x, this.y, this.streakLen, 1.5);
+        } else {
+          ctx.globalAlpha = this.opacity;
+
+          const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+          grd.addColorStop(0, this.color + this.opacity + ')');
+          grd.addColorStop(1, this.color + '0)');
+          ctx.fillStyle = grd;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+          ctx.fill();
+
+
+          ctx.globalAlpha = Math.min(1, this.opacity + 0.3);
+          ctx.fillStyle = this.color + '1)';
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+
+    function drawConnections() {
+      const DIST = 90;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d = Math.sqrt(dx*dx + dy*dy);
+          if (d < DIST) {
+            const alpha = (1 - d / DIST) * 0.18;
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.strokeStyle = `rgba(180,0,8,1)`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }
+    }
+
+
+    let glitchTimer = 0;
+    let glitchActive = false;
+    let glitchY, glitchH, glitchAlpha;
+
+    function maybeGlitch() {
+      glitchTimer--;
+      if (glitchTimer <= 0) {
+        glitchTimer = Math.floor(rand(60, 240));
+        glitchActive = true;
+        glitchY = rand(0, H);
+        glitchH = rand(2, 12);
+        glitchAlpha = rand(0.05, 0.2);
+        setTimeout(() => { glitchActive = false; }, rand(40, 120));
+      }
+      if (glitchActive) {
+        ctx.save();
+        ctx.globalAlpha = glitchAlpha;
+        ctx.fillStyle = `rgba(255,0,0,1)`;
+        ctx.fillRect(0, glitchY, W, glitchH);
+        ctx.restore();
+      }
+    }
+
+
+    function loop() {
+
+      ctx.fillStyle = 'rgba(10,0,0,0.18)';
+      ctx.fillRect(0, 0, W, H);
+
+      drawConnections();
+
+      for (const p of particles) {
+        p.update();
+        p.draw();
+      }
+
+      maybeGlitch();
+      requestAnimationFrame(loop);
+    }
+
+    loop();
+  </script>
+</body>
+</html>
