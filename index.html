@@ -150,6 +150,35 @@
       0%, 100% { opacity: 0.7; }
       50% { opacity: 0; }
     }
+
+    .find-out {
+      margin-top: 1.2rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.7rem, 1.4vw, 0.95rem);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      pointer-events: all;
+    }
+
+    .find-out a {
+      color: var(--red-bright);
+      text-decoration: none;
+      border-bottom: 1px solid var(--red-dim);
+      padding-bottom: 1px;
+      text-shadow:
+        0 0 6px var(--red-bright),
+        0 0 20px var(--red);
+      transition: color 0.2s, text-shadow 0.2s, border-color 0.2s;
+    }
+
+    .find-out a:hover {
+      color: #fff;
+      border-color: var(--red-bright);
+      text-shadow:
+        0 0 8px #fff,
+        0 0 20px var(--red-bright),
+        0 0 50px var(--red);
+    }
   </style>
 </head>
 <body>
@@ -168,6 +197,7 @@
     </div>
     <p class="para">This site is a mock. The domain registered is the same 40 character domain as the 2017 WannaCry
     ransomware attack, the only difference is that this site is purely aesthetic and the TLD is .lol not .com.</p>
+    <p class="find-out"><a href="https://en.wikipedia.org/wiki/WannaCry_ransomware_attack" target="_blank" rel="noopener noreferrer">Find out more.</a></p>
   </div>
 
   <div class="status">ENCRYPTED &nbsp;|&nbsp; 0x00FF &nbsp;|&nbsp; SYS::NULL</div>
